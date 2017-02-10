@@ -6,7 +6,7 @@ package sample.cluster.transformation
 object TransformationFrontendApp {
 
   def main(args: Array[String]) {
-    TransformationFrontend.main(Seq("2552").toArray)
+    TransformationFrontend.main(Seq("2551").toArray)
   }
 
 }

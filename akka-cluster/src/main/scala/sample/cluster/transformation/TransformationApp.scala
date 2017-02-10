@@ -1,0 +1,18 @@
+package sample.cluster.transformation
+
+
+// master - work
+
+object TransformationApp {
+
+  def main(args: Array[String]): Unit = {
+    // starting 2 frontend nodes and 3 backend nodes
+    // (workers, here named backend, can detect and register to new master nodes, here named frontend)
+    TransformationFrontend.main(Seq("2551").toArray)
+    TransformationBackend.main(Seq("2552").toArray)
+    TransformationBackend.main(Array.empty)
+    TransformationBackend.main(Array.empty)
+    TransformationFrontend.main(Array.empty)
+  }
+
+}

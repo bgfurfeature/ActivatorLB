@@ -23,10 +23,12 @@ class TransformationFrontend extends Actor {
       sender() ! JobFailed("Service unavailable, try again later", job)
 
     case job: TransformationJob =>
+      // 转发
       jobCounter += 1
       backends(jobCounter % backends.size) forward job
 
     case BackendRegistration if !backends.contains(sender()) =>
+      // 注册
       context watch sender()
       backends = backends :+ sender()
 
@@ -48,6 +50,7 @@ object TransformationFrontend {
     val frontend = system.actorOf(Props[TransformationFrontend], name = "frontend")
 
     val counter = new AtomicInteger
+    // 按一定的时间间隔调度
     import system.dispatcher
     system.scheduler.schedule(2.seconds, 2.seconds) {
       implicit val timeout = Timeout(5 seconds)

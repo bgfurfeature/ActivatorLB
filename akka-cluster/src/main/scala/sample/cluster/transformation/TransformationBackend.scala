@@ -17,10 +17,14 @@ class TransformationBackend extends Actor {
   override def preStart(): Unit = cluster.subscribe(self, classOf[MemberUp]) // 订阅集群成员上线
   // A snapshot of [[akka.cluster.ClusterEvent.CurrentClusterState]]
   //  will be sent to the subscriber as the first message.
-  override def postStop(): Unit = cluster.unsubscribe(self)
+  override def postStop(): Unit = {
+    cluster.unsubscribe(self)
+    context.stop(self)
+  }
 
   def receive = {
     case TransformationJob(text) =>  // 消息返回给了发出者
+      println("receive job....")
       sender() ! TransformationResult(text.toUpperCase)
     case state: CurrentClusterState =>
       state.members.filter(_.status == MemberStatus.Up) foreach register
@@ -36,6 +40,7 @@ class TransformationBackend extends Actor {
         BackendRegistration
 
     println(RootActorPath(member.address) / "user")
+
   }
 }
 //#backend
